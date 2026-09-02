@@ -1,188 +1,135 @@
 import { useState } from 'react';
-import {
-  Alert,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-export default function HomeScreen() {
-  const [firstValue, setFirstValue] = useState('');
-  const [secondValue, setSecondValue] = useState('');
-  const [result, setResult] = useState('');
-  const [statusMessage, setStatusMessage] = useState('Enter two numbers to calculate.');
+type CounterProps = {
+  initialValue?: number;
+  incrementBy?: number;
+};
 
-  const parseNumber = (value: string, fieldName: string) => {
-    const trimmedValue = value.trim();
+function CounterApp({ initialValue = 0, incrementBy = 1 }: CounterProps) {
+  const [count, setCount] = useState(initialValue);
 
-    if (trimmedValue === '') {
-      throw new Error(`Please enter a value for ${fieldName}.`);
-    }
-
-    const numericValue = Number(trimmedValue);
-
-    if (!Number.isFinite(numericValue)) {
-      throw new Error(`"${trimmedValue}" is not a valid number.`);
-    }
-
-    return numericValue;
+  const incrementCount = () => {
+    setCount((currentValue) => currentValue + incrementBy);
   };
 
-  const calculate = (operation: 'add' | 'subtract' | 'multiply' | 'divide') => {
-    try {
-      const firstNumber = parseNumber(firstValue, 'first number');
-      const secondNumber = parseNumber(secondValue, 'second number');
+  const decrementCount = () => {
+    setCount((currentValue) => Math.max(0, currentValue - incrementBy));
+  };
 
-      if (operation === 'divide' && secondNumber === 0) {
-        setResult('');
-        setStatusMessage('Cannot divide by zero.');
-        Alert.alert('Division by zero', 'The second value cannot be zero.');
-        return;
-      }
-
-      let computedResult = 0;
-
-      switch (operation) {
-        case 'add':
-          computedResult = firstNumber + secondNumber;
-          break;
-        case 'subtract':
-          computedResult = firstNumber - secondNumber;
-          break;
-        case 'multiply':
-          computedResult = firstNumber * secondNumber;
-          break;
-        case 'divide':
-          computedResult = firstNumber / secondNumber;
-          break;
-        default:
-          break;
-      }
-
-      setResult(computedResult.toString());
-      setStatusMessage(`Result for ${operation}:`);
-    } catch (error) {
-      setResult('');
-      setStatusMessage(error instanceof Error ? error.message : 'Invalid input.');
-      Alert.alert('Invalid input', error instanceof Error ? error.message : 'Please enter valid numbers.');
-    }
+  const resetCount = () => {
+    setCount(initialValue);
   };
 
   return (
     <View style={styles.screen}>
       <View style={styles.card}>
-        <Text style={styles.title}>Simple Calculator</Text>
+        <Text style={styles.label}>Counter App</Text>
+        <Text style={styles.value}>{count}</Text>
 
-        <TextInput
-          value={firstValue}
-          onChangeText={setFirstValue}
-          placeholder="Enter first number"
-          placeholderTextColor="#7A879B"
-          keyboardType="numeric"
-          style={styles.input}
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
+        <View style={styles.buttonRow}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Decrease counter"
+            onPress={decrementCount}
+            style={({ pressed }) => [styles.button, styles.decrementButton, pressed && styles.pressed]}>
+            <Text style={styles.buttonText}>-</Text>
+          </Pressable>
 
-        <TextInput
-          value={secondValue}
-          onChangeText={setSecondValue}
-          placeholder="Enter second number"
-          placeholderTextColor="#7A879B"
-          keyboardType="numeric"
-          style={styles.input}
-          autoCapitalize="none"
-          autoCorrect={false}
-          onSubmitEditing={() => calculate('add')}
-        />
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Reset counter"
+            onPress={resetCount}
+            style={({ pressed }) => [styles.button, styles.resetButton, pressed && styles.pressed]}>
+            <Text style={styles.buttonText}>Reset</Text>
+          </Pressable>
 
-        <View style={styles.buttonGrid}>
-          <Pressable onPress={() => calculate('add')} style={styles.button}>
-            <Text style={styles.buttonText}>Add</Text>
-          </Pressable>
-          <Pressable onPress={() => calculate('subtract')} style={styles.button}>
-            <Text style={styles.buttonText}>Subtract</Text>
-          </Pressable>
-          <Pressable onPress={() => calculate('multiply')} style={styles.button}>
-            <Text style={styles.buttonText}>Multiply</Text>
-          </Pressable>
-          <Pressable onPress={() => calculate('divide')} style={styles.button}>
-            <Text style={styles.buttonText}>Divide</Text>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Increase counter"
+            onPress={incrementCount}
+            style={({ pressed }) => [styles.button, styles.incrementButton, pressed && styles.pressed]}>
+            <Text style={styles.buttonText}>+</Text>
           </Pressable>
         </View>
 
-        <Text style={styles.status}>{statusMessage}</Text>
-        <Text style={styles.result}>{result || 'No result yet'}</Text>
+        <Text style={styles.helper}>Step: {incrementBy}</Text>
       </View>
     </View>
   );
 }
 
+export default function HomeScreen() {
+  return <CounterApp initialValue={0} incrementBy={1} />;
+}
+
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: '#EAF2FF',
+    backgroundColor: '#EEF4FF',
+    alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
   },
   card: {
+    width: '100%',
+    maxWidth: 420,
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
-    padding: 24,
+    padding: 28,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
+    shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.12,
-    shadowRadius: 12,
+    shadowRadius: 16,
     elevation: 4,
   },
-  title: {
-    color: '#1F2A44',
-    fontSize: 28,
-    fontWeight: '800',
-    marginBottom: 20,
+  label: {
+    color: '#2D4A77',
+    fontSize: 18,
+    fontWeight: '700',
     textAlign: 'center',
+    marginBottom: 12,
   },
-  input: {
-    backgroundColor: '#F4F7FC',
-    borderColor: '#D7E1F0',
-    borderWidth: 1,
-    borderRadius: 12,
-    color: '#1F2A44',
-    fontSize: 16,
-    marginBottom: 14,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+  value: {
+    color: '#172033',
+    fontSize: 52,
+    fontWeight: '800',
+    textAlign: 'center',
+    marginBottom: 24,
   },
-  buttonGrid: {
+  buttonRow: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
-    marginTop: 12,
-    marginBottom: 18,
+    justifyContent: 'space-between',
+    gap: 12,
   },
   button: {
-    backgroundColor: '#3F6FE5',
-    borderRadius: 10,
-    flexBasis: '48%',
+    flex: 1,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 12,
+    paddingVertical: 16,
+  },
+  decrementButton: {
+    backgroundColor: '#D9E7FF',
+  },
+  resetButton: {
+    backgroundColor: '#F1F3F8',
+  },
+  incrementButton: {
+    backgroundColor: '#3B82F6',
+  },
+  pressed: {
+    opacity: 0.8,
   },
   buttonText: {
-    color: '#FFFFFF',
-    fontSize: 15,
-    fontWeight: '700',
-  },
-  status: {
-    color: '#53627C',
-    fontSize: 14,
-    marginBottom: 8,
-  },
-  result: {
-    color: '#18253F',
-    fontSize: 30,
+    color: '#172033',
+    fontSize: 28,
     fontWeight: '800',
+  },
+  helper: {
+    color: '#5A6B83',
+    fontSize: 14,
+    textAlign: 'center',
+    marginTop: 18,
   },
 });

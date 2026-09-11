@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Alert, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Link, useRouter } from 'expo-router';
+import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 type MetricCardProps = {
   label: string;
@@ -45,7 +46,7 @@ export default function HomeScreen() {
   const { width } = useWindowDimensions();
   const isWide = width >= 700;
   const isCompact = width < 430;
-  const handleAction = (action: string) => Alert.alert(action, `${action} is ready for your next study session.`);
+  const router = useRouter();
 
   return (
     <ScrollView contentContainerStyle={styles.screen} showsVerticalScrollIndicator={false}>
@@ -58,7 +59,7 @@ export default function HomeScreen() {
           </View>
           <Pressable
             accessibilityLabel="Open profile"
-            onPress={() => Alert.alert('Profile', 'Profile settings will open here.')}
+            onPress={() => router.push('/profile')}
             style={({ pressed }) => [styles.profileButton, pressed && styles.pressed]}>
             <Text style={styles.profileInitial}>JD</Text>
             <Ionicons color="#344563" name="chevron-down" size={16} />
@@ -70,7 +71,7 @@ export default function HomeScreen() {
             <Text style={styles.sectionTitle}>Your progress</Text>
             <Text style={styles.sectionDescription}>A quick view of your study momentum</Text>
           </View>
-          <Pressable onPress={() => handleAction('View insights')} style={({ pressed }) => [styles.linkButton, pressed && styles.pressed]}>
+          <Pressable onPress={() => router.push('/course/cce-106')} style={({ pressed }) => [styles.linkButton, pressed && styles.pressed]}>
             <Text style={styles.linkText}>View insights</Text>
             <Ionicons color="#356AE6" name="arrow-forward" size={16} />
           </Pressable>
@@ -107,14 +108,16 @@ export default function HomeScreen() {
             <Text style={styles.sectionTitle}>Quick actions</Text>
             <Text style={styles.sectionDescription}>Jump back into your work</Text>
             <View style={styles.actionList}>
-              <Pressable onPress={() => handleAction('Start a focus session')} style={({ pressed }) => [styles.primaryAction, pressed && styles.pressed]}>
+              <Pressable onPress={() => router.push('/course/cce-106')} style={({ pressed }) => [styles.primaryAction, pressed && styles.pressed]}>
                 <Ionicons color="#FFFFFF" name="play" size={17} />
                 <Text style={styles.primaryActionText}>Start focus session</Text>
               </Pressable>
-              <Pressable onPress={() => handleAction('Add a task')} style={({ pressed }) => [styles.secondaryAction, pressed && styles.pressed]}>
-                <Ionicons color="#356AE6" name="add" size={20} />
-                <Text style={styles.secondaryActionText}>Add a task</Text>
-              </Pressable>
+              <Link href="/student/146804" asChild>
+                <Pressable style={({ pressed }) => [styles.secondaryAction, pressed && styles.pressed]}>
+                  <Ionicons color="#356AE6" name="person-outline" size={20} />
+                  <Text style={styles.secondaryActionText}>View student profile</Text>
+                </Pressable>
+              </Link>
             </View>
           </View>
         </View>

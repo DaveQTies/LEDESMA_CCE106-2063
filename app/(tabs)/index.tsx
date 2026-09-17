@@ -2,6 +2,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { Link, useRouter } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
+import Lab08Screen from '../lab08';
+
 type MetricCardProps = {
   label: string;
   value: string;
@@ -42,7 +44,8 @@ function MetricCard({ label, value, detail, icon, tone, compact }: MetricCardPro
   );
 }
 
-export default function HomeScreen() {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function OriginalHomeScreen() {
   const { width } = useWindowDimensions();
   const isWide = width >= 700;
   const isCompact = width < 430;
@@ -124,6 +127,10 @@ export default function HomeScreen() {
       </View>
     </ScrollView>
   );
+}
+
+export default function HomeScreen() {
+  return <Lab08Screen />;
 }
 
 const styles = StyleSheet.create({

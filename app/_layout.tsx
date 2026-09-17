@@ -1,5 +1,5 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router/react-navigation';
 import { Stack } from 'expo-router';
+import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router/react-navigation';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
@@ -16,6 +16,7 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="lab08" options={{ title: 'Class Attendance' }} />
         <Stack.Screen name="course/[id]" options={{ title: 'Course details' }} />
         <Stack.Screen name="student/[id]" options={{ title: 'Student details' }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
